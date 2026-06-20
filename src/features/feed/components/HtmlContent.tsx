@@ -10,7 +10,7 @@ const BASE_STYLE: MixedStyleDeclaration = {
 
 const TAGS_STYLES: Record<string, MixedStyleDeclaration> = {
   a: { color: '#2563eb', textDecorationLine: 'underline' },
-  img: { marginVertical: 8 },
+  img: { marginVertical: 8, alignSelf: 'center' },
   blockquote: {
     borderLeftWidth: 3,
     borderLeftColor: '#ddd',
@@ -34,7 +34,7 @@ interface HtmlContentProps {
 
 export default function HtmlContent({ html, baseStyle }: HtmlContentProps) {
   const { width } = useWindowDimensions();
-  const contentWidth = width - 64;
+  const contentWidth = width - 32;
 
   const renderersProps = {
     a: {
@@ -43,6 +43,9 @@ export default function HtmlContent({ html, baseStyle }: HtmlContentProps) {
           Linking.openURL(href);
         }
       },
+    },
+    img: {
+      enableExperimentalPercentWidth: true,
     },
   };
 
@@ -56,6 +59,7 @@ export default function HtmlContent({ html, baseStyle }: HtmlContentProps) {
       enableExperimentalMarginCollapsing
       ignoredDomTags={['script', 'style', 'iframe', 'form', 'input', 'button', 'select', 'textarea', 'object', 'embed']}
       renderersProps={renderersProps}
+      defaultTextProps={{ selectable: true }}
     />
   );
 }

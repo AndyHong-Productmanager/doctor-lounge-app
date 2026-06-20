@@ -18,9 +18,13 @@ export const ChatRepository = {
   // ── Threads ──
 
   async getThreads(): Promise<ChatThread[]> {
-    const { data } = await client.get(`${BASE}/chat/threads`);
-    const list = Array.isArray(data) ? data : data.threads ?? [];
-    return ChatThreadListResponseSchema.parse(list);
+    try {
+      const { data } = await client.get(`${BASE}/chat/threads`);
+      const list = Array.isArray(data) ? data : data.threads ?? [];
+      return ChatThreadListResponseSchema.parse(list);
+    } catch {
+      return [];
+    }
   },
 
   async getThread(threadId: number): Promise<ChatThread> {

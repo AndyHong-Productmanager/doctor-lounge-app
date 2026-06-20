@@ -13,6 +13,7 @@ const BASE = FLUENT_API;
 
 export interface FeedListParams {
   space?: string;
+  user_id?: number;
   page?: number;
   per_page?: number;
   search?: string;

@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { router, Stack } from 'expo-router';
-import { LogOut, ChevronRight, Bookmark, Search } from 'lucide-react-native';
+import { LogOut, ChevronRight, Bookmark, Search, Pencil } from 'lucide-react-native';
 import { useAuthStore } from '../../auth/hooks/useAuthStore';
 import { useProfile } from '../hooks/useProfile';
 import { AuthRepository } from '../../../data/repositories/AuthRepository';
@@ -94,6 +94,16 @@ export default function ProfileScreen() {
           <View style={styles.menuItemRow}>
             <ChevronRight size={18} color="#374151" />
             <Text style={styles.menuText}>내 활동 보기</Text>
+          </View>
+          <ChevronRight size={18} color="#9ca3af" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/(tabs)/profile/edit')}
+        >
+          <View style={styles.menuItemRow}>
+            <Pencil size={18} color="#374151" />
+            <Text style={styles.menuText}>프로필 수정</Text>
           </View>
           <ChevronRight size={18} color="#9ca3af" />
         </TouchableOpacity>

@@ -26,7 +26,7 @@ export function useUpdateProfile() {
       data,
     }: {
       username: string;
-      data: Partial<Pick<UserProfile, 'display_name' | 'bio' | 'avatar'>>;
+      data: Partial<Pick<UserProfile, 'display_name' | 'short_description'>>;
     }) => ProfileRepository.updateProfile(username, data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
