@@ -33,6 +33,18 @@ export function useToggleReaction() {
   });
 }
 
+export function useToggleBookmark() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (feedId: number) => FeedRepository.toggleBookmark(feedId),
+    onSuccess: (_data, feedId) => {
+      queryClient.invalidateQueries({ queryKey: ['feed', feedId] });
+      queryClient.invalidateQueries({ queryKey: ['feeds'] });
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+    },
+  });
+}
+
 export function useAddComment() {
   const queryClient = useQueryClient();
   return useMutation({

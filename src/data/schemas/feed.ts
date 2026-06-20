@@ -15,6 +15,7 @@ export const FeedItemSchema = z.object({
   comments_count: z.number().optional().default(0),
   reactions_count: z.number().optional().default(0),
   is_reacted: z.boolean().optional().default(false),
+  is_bookmarked: z.boolean().optional().default(false),
   content_type: z.string().optional().default('text'),
   slug: z.string().optional().default(''),
   xprofile: XProfileSchema.optional(),

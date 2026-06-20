@@ -10,13 +10,13 @@ import {
   Alert,
 } from 'react-native';
 import { router, Stack } from 'expo-router';
-import { LogOut, ChevronRight } from 'lucide-react-native';
+import { LogOut, ChevronRight, Bookmark, Search } from 'lucide-react-native';
 import { useAuthStore } from '../../auth/hooks/useAuthStore';
 import { useProfile } from '../hooks/useProfile';
 import { AuthRepository } from '../../../data/repositories/AuthRepository';
 
 export default function ProfileScreen() {
-  const { user, clearAuth } = useAuthStore();
+  const { user, deviceToken, clearAuth } = useAuthStore();
   const username = user?.nicename ?? '';
   const { data: profile, isLoading } = useProfile(username);
 
@@ -27,7 +27,7 @@ export default function ProfileScreen() {
         text: '로그아웃',
         style: 'destructive',
         onPress: async () => {
-          await AuthRepository.logout();
+          await AuthRepository.logout(deviceToken);
           clearAuth();
           router.replace('/(auth)/login');
         },
@@ -96,7 +96,30 @@ export default function ProfileScreen() {
             router.push(`/profile/${username}`)
           }
         >
-          <Text style={styles.menuText}>내 활동 보기</Text>
+          <View style={styles.menuItemRow}>
+            <ChevronRight size={18} color="#374151" />
+            <Text style={styles.menuText}>내 활동 보기</Text>
+          </View>
+          <ChevronRight size={18} color="#9ca3af" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/bookmarks')}
+        >
+          <View style={styles.menuItemRow}>
+            <Bookmark size={18} color="#374151" />
+            <Text style={styles.menuText}>북마크</Text>
+          </View>
+          <ChevronRight size={18} color="#9ca3af" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/search')}
+        >
+          <View style={styles.menuItemRow}>
+            <Search size={18} color="#374151" />
+            <Text style={styles.menuText}>검색</Text>
+          </View>
           <ChevronRight size={18} color="#9ca3af" />
         </TouchableOpacity>
       </View>

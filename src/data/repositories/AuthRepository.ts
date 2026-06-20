@@ -22,13 +22,14 @@ export const AuthRepository = {
     }
   },
 
-  async logout() {
-    const token = await SecureStore.getItemAsync('jwt_token');
-    if (token) {
+  async logout(deviceToken?: string | null) {
+    if (deviceToken) {
       try {
-        await client.delete('/dl-app/v1/device-token', { data: { token } });
+        await client.delete('/dl-app/v1/device-token', {
+          data: { token: deviceToken },
+        });
       } catch {
-        // Ignore logout errors
+        // Ignore device token unregister errors
       }
     }
     await SecureStore.deleteItemAsync('jwt_token');

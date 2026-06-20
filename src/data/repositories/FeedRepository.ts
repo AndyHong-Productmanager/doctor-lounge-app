@@ -73,6 +73,11 @@ export const FeedRepository = {
     return parsed;
   },
 
+  async toggleBookmark(feedId: number) {
+    const { data } = await client.post(`${BASE}/feeds/${feedId}/bookmark`);
+    return data as { is_bookmarked: boolean };
+  },
+
   async uploadMedia(formData: FormData) {
     const { data } = await client.post(`${BASE}/feeds/media-upload`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
