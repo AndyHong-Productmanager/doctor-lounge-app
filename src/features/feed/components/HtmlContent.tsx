@@ -1,6 +1,9 @@
 import React from 'react';
 import { useWindowDimensions, Linking } from 'react-native';
 import RenderHtml, { type MixedStyleDeclaration } from 'react-native-render-html';
+import { marked } from 'marked';
+
+marked.setOptions({ breaks: true, gfm: true });
 
 const BASE_STYLE: MixedStyleDeclaration = {
   fontSize: 15,
@@ -25,6 +28,12 @@ const TAGS_STYLES: Record<string, MixedStyleDeclaration> = {
     fontFamily: 'monospace',
     fontSize: 13,
   },
+  h1: { fontSize: 22, fontWeight: '700', marginVertical: 8, color: '#111' },
+  h2: { fontSize: 19, fontWeight: '700', marginVertical: 6, color: '#111' },
+  h3: { fontSize: 17, fontWeight: '600', marginVertical: 4, color: '#111' },
+  li: { marginBottom: 4 },
+  em: { fontStyle: 'italic', color: '#555' },
+  strong: { fontWeight: '700' },
 };
 
 function preprocessHtml(raw: string): string {
@@ -33,10 +42,7 @@ function preprocessHtml(raw: string): string {
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
       .replace(/&amp;/g, '&');
-    return decoded
-      .split(/\n\n+/)
-      .map((block: string) => `<p>${block.trim().split('\n').join('<br/>')}</p>`)
-      .join('');
+    return marked.parse(decoded) as string;
   });
 }
 
