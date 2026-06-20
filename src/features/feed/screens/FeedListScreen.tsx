@@ -119,7 +119,7 @@ export default function FeedListScreen() {
       />
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => router.push('/feed/compose')}
+        onPress={() => router.push('/(tabs)/feed/compose')}
       >
         <Plus size={24} color="#fff" />
       </TouchableOpacity>

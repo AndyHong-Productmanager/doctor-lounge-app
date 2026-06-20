@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Slot, router } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Notifications from 'expo-notifications';
 import type { EventSubscription } from 'expo-modules-core';
@@ -69,7 +69,7 @@ function AuthGate() {
         if (type === 'comment' || type === 'mention') {
           const feedId = data.feed_id as string | number | undefined;
           if (feedId) {
-            router.push(`/feed/${feedId}`);
+            router.push(`/(tabs)/feed/${feedId}`);
           }
         } else if (type === 'chat') {
           const threadId = data.thread_id as string | number | undefined;
@@ -94,7 +94,7 @@ function AuthGate() {
     );
   }
 
-  return <Slot />;
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
 
 export default function RootLayout() {

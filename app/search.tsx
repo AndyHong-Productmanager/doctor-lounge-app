@@ -71,7 +71,7 @@ export default function SearchScreen() {
     ({ item }: { item: MemberItem }) => (
       <TouchableOpacity
         style={styles.memberItem}
-        onPress={() => router.push(`/profile/${item.username}`)}
+        onPress={() => router.push(`/(tabs)/profile/${item.username}`)}
       >
         {item.avatar ? (
           <Image source={{ uri: item.avatar }} style={styles.memberAvatar} />
