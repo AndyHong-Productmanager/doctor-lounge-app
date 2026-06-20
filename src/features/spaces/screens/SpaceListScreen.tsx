@@ -22,7 +22,7 @@ export default function SpaceListScreen() {
       <TouchableOpacity
         style={styles.card}
         activeOpacity={0.7}
-        onPress={() => router.push(`/spaces/${item.slug}`)}
+        onPress={() => router.push(`/(tabs)/spaces/${item.slug}`)}
       >
         {item.logo ? (
           <Image source={{ uri: item.logo }} style={styles.logo} />

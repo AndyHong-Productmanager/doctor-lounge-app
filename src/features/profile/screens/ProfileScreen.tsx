@@ -88,7 +88,7 @@ export default function ProfileScreen() {
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() =>
-            router.push(`/profile/${username}`)
+            router.push(`/(tabs)/profile/${username}`)
           }
         >
           <View style={styles.menuItemRow}>

@@ -21,18 +21,19 @@ function formatTimeAgo(dateStr: string): string {
 
 interface FeedCardProps {
   item: FeedItem;
+  onPress?: () => void;
   onReact?: () => void;
   onBookmark?: () => void;
 }
 
-export default function FeedCard({ item, onReact, onBookmark }: FeedCardProps) {
+export default function FeedCard({ item, onPress, onReact, onBookmark }: FeedCardProps) {
   const author = item.xprofile;
 
   return (
     <TouchableOpacity
       style={styles.card}
       activeOpacity={0.7}
-      onPress={() => router.push(`/feed/${item.id}`)}
+      onPress={onPress ?? (() => router.push(`/(tabs)/feed/${item.id}`))}
     >
       <View style={styles.header}>
         {author?.avatar ? (

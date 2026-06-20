@@ -9,7 +9,7 @@ import {
   StyleSheet,
   RefreshControl,
 } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { Users } from 'lucide-react-native';
 import { useSpaceDetail } from '../hooks/useSpaces';
 import { useFeeds } from '../../feed/hooks/useFeeds';
@@ -87,7 +87,11 @@ export default function SpaceDetailScreen() {
       <FlatList
         data={feeds}
         renderItem={({ item }: { item: FeedItem }) => (
-          <FeedCard item={item} onReact={() => handleReaction(item.id)} />
+          <FeedCard
+            item={item}
+            onPress={() => router.push(`/(tabs)/spaces/feed/${item.id}`)}
+            onReact={() => handleReaction(item.id)}
+          />
         )}
         keyExtractor={(item) => String(item.id)}
         ListHeaderComponent={renderHeader}
