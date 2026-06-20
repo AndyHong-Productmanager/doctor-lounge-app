@@ -26,14 +26,15 @@ export default function UserProfileScreen() {
   const [isFollowing, setIsFollowing] = useState(false);
   const followMutation = useFollowMutation();
   const unfollowMutation = useUnfollowMutation();
+  const profileUserId = profile?.user_id ?? profile?.id;
   const {
     data: feedsData,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   } = useFeeds(
-    profile?.user_id ? { user_id: profile.user_id } : {},
-    { enabled: !!profile?.user_id }
+    profileUserId ? { user_id: profileUserId } : {},
+    { enabled: !!profileUserId }
   );
 
   const toggleReaction = useToggleReaction();

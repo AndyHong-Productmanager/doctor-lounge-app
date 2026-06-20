@@ -18,12 +18,12 @@ export const ChatRepository = {
   // ── Threads ──
 
   async getThreads(): Promise<ChatThread[]> {
+    const { data } = await client.get(`${BASE}/chat/threads`);
+    const list = Array.isArray(data) ? data : data.threads ?? data.data ?? [];
     try {
-      const { data } = await client.get(`${BASE}/chat/threads`);
-      const list = Array.isArray(data) ? data : data.threads ?? [];
       return ChatThreadListResponseSchema.parse(list);
     } catch {
-      return [];
+      return Array.isArray(list) ? list : [];
     }
   },
 
@@ -63,7 +63,12 @@ export const ChatRepository = {
     const { data } = await client.get(`${BASE}/chat/messages/${threadId}`, {
       params: { page, per_page: perPage },
     });
-    return ChatMessageListResponseSchema.parse(data);
+    try {
+      return ChatMessageListResponseSchema.parse(data);
+    } catch {
+      const msgs = data.messages ?? data.data ?? (Array.isArray(data) ? data : []);
+      return { messages: Array.isArray(msgs) ? msgs : [] };
+    }
   },
 
   async getNewMessages(

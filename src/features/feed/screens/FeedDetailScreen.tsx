@@ -16,7 +16,50 @@ import { useToggleReaction, useToggleBookmark, useAddComment } from '../hooks/us
 import HtmlContent from '../components/HtmlContent';
 import CommentItemComponent from '../components/CommentItem';
 import CommentInput from '../components/CommentInput';
-import type { CommentItem } from '../../../data/schemas/feed';
+import type { CommentItem, FeedItem } from '../../../data/schemas/feed';
+
+function getMediaImages(item: FeedItem): string[] {
+  const meta = item.meta as Record<string, unknown> | null | undefined;
+  if (!meta && !item.featured_image) {
+    return item.featured_image ? [item.featured_image] : [];
+  }
+
+  const images: string[] = [];
+
+  if (meta) {
+    const mediaItems = meta.media_items;
+    if (Array.isArray(mediaItems)) {
+      for (const mi of mediaItems) {
+        if (
+          mi &&
+          typeof mi === 'object' &&
+          'url' in mi &&
+          typeof (mi as Record<string, unknown>).url === 'string'
+        ) {
+          images.push((mi as Record<string, unknown>).url as string);
+        }
+      }
+    }
+
+    const preview = meta.media_preview;
+    if (preview && typeof preview === 'object' && 'image' in preview) {
+      const previewImage = (preview as Record<string, unknown>).image;
+      if (
+        typeof previewImage === 'string' &&
+        previewImage &&
+        !images.includes(previewImage)
+      ) {
+        images.push(previewImage);
+      }
+    }
+  }
+
+  if (item.featured_image && !images.includes(item.featured_image)) {
+    images.unshift(item.featured_image);
+  }
+
+  return images;
+}
 
 function formatTimeAgo(dateStr: string): string {
   const now = Date.now();
@@ -93,6 +136,23 @@ export default function FeedDetailScreen() {
       <View style={styles.content}>
         <HtmlContent html={feed.message_rendered} />
       </View>
+
+      {(() => {
+        const mediaImages = getMediaImages(feed);
+        if (mediaImages.length === 0) return null;
+        return (
+          <View style={{ marginBottom: 16 }}>
+            {mediaImages.map((url, idx) => (
+              <Image
+                key={idx}
+                source={{ uri: url }}
+                style={{ width: '100%', height: 300, borderRadius: 8, marginBottom: 4 }}
+                resizeMode="cover"
+              />
+            ))}
+          </View>
+        );
+      })()}
 
       <View style={styles.actions}>
         <TouchableOpacity
