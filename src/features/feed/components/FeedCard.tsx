@@ -53,7 +53,7 @@ export default function FeedCard({ item, onReact, onBookmark }: FeedCardProps) {
       </View>
 
       <View style={styles.content}>
-        <HtmlContent html={item.message} />
+        <HtmlContent html={item.message_rendered} />
       </View>
 
       <View style={styles.footer}>

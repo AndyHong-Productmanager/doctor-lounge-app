@@ -49,7 +49,7 @@ export default function UserProfileScreen() {
   }, [username, isFollowing, followMutation, unfollowMutation]);
 
   const feeds: FeedItem[] =
-    feedsData?.pages.flatMap((page) => page.posts) ?? [];
+    feedsData?.pages.flatMap((page) => page.feeds.data) ?? [];
 
   const handleReaction = useCallback(
     (feedId: number) => {

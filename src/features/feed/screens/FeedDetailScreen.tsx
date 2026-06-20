@@ -91,7 +91,7 @@ export default function FeedDetailScreen() {
       </View>
 
       <View style={styles.content}>
-        <HtmlContent html={feed.message} />
+        <HtmlContent html={feed.message_rendered} />
       </View>
 
       <View style={styles.actions}>

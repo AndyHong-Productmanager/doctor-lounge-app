@@ -31,7 +31,7 @@ export default function FeedListScreen() {
   const toggleBookmark = useToggleBookmark();
 
   const feeds: FeedItem[] =
-    data?.pages.flatMap((page) => page.posts) ?? [];
+    data?.pages.flatMap((page) => page.feeds.data) ?? [];
 
   const handleReaction = useCallback(
     (feedId: number) => {
