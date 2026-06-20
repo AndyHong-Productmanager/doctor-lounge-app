@@ -4,9 +4,14 @@
     "slug": "doctor-lounge",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/branding/dl-mlogo.png",
     "userInterfaceStyle": "light",
     "scheme": "dlapp",
+    "splash": {
+      "image": "./assets/branding/dl-logo-full.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -15,7 +20,7 @@
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
+        "foregroundImage": "./assets/branding/dl-mlogo.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
@@ -27,7 +32,14 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-status-bar"
+      "expo-status-bar",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/branding/dl-mlogo.png",
+          "color": "#2563eb"
+        }
+      ]
     ]
   }
 }

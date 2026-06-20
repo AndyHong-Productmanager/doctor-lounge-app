@@ -9,10 +9,10 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
-import { Heart } from 'lucide-react-native';
+import { Heart, Bookmark } from 'lucide-react-native';
 import { useFeedDetail } from '../hooks/useFeedDetail';
 import { useComments } from '../hooks/useComments';
-import { useToggleReaction, useAddComment } from '../hooks/useFeedMutations';
+import { useToggleReaction, useToggleBookmark, useAddComment } from '../hooks/useFeedMutations';
 import HtmlContent from '../components/HtmlContent';
 import CommentItemComponent from '../components/CommentItem';
 import CommentInput from '../components/CommentInput';
@@ -44,6 +44,7 @@ export default function FeedDetailScreen() {
     isFetchingNextPage,
   } = useComments(feedId);
   const toggleReaction = useToggleReaction();
+  const toggleBookmark = useToggleBookmark();
   const addComment = useAddComment();
 
   const comments: CommentItem[] =
@@ -112,6 +113,19 @@ export default function FeedDetailScreen() {
             {feed.reactions_count > 0
               ? `${feed.reactions_count}`
               : '좋아요'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionBtn, { marginLeft: 'auto' }]}
+          onPress={() => toggleBookmark.mutate(feedId)}
+        >
+          <Bookmark
+            size={20}
+            color={feed.is_bookmarked ? '#2563eb' : '#9ca3af'}
+            fill={feed.is_bookmarked ? '#2563eb' : 'none'}
+          />
+          <Text style={styles.actionText}>
+            {feed.is_bookmarked ? '저장됨' : '저장'}
           </Text>
         </TouchableOpacity>
       </View>

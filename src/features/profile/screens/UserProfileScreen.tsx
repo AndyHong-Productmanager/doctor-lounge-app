@@ -1,14 +1,18 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   FlatList,
   Text,
   Image,
   ActivityIndicator,
+  TouchableOpacity,
   StyleSheet,
 } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
+import { UserPlus, UserMinus } from 'lucide-react-native';
 import { useProfile } from '../hooks/useProfile';
+import { useFollowMutation, useUnfollowMutation } from '../hooks/useFollow';
+import { useAuthStore } from '../../auth/hooks/useAuthStore';
 import { useFeeds } from '../../feed/hooks/useFeeds';
 import { useToggleReaction } from '../../feed/hooks/useFeedMutations';
 import FeedCard from '../../feed/components/FeedCard';
@@ -17,6 +21,11 @@ import type { FeedItem } from '../../../data/schemas/feed';
 export default function UserProfileScreen() {
   const { username } = useLocalSearchParams<{ username: string }>();
   const { data: profile, isLoading } = useProfile(username ?? '');
+  const { user } = useAuthStore();
+  const isOwnProfile = user?.nicename === username;
+  const [isFollowing, setIsFollowing] = useState(false);
+  const followMutation = useFollowMutation();
+  const unfollowMutation = useUnfollowMutation();
   const {
     data: feedsData,
     fetchNextPage,
@@ -25,6 +34,19 @@ export default function UserProfileScreen() {
   } = useFeeds({ search: username });
 
   const toggleReaction = useToggleReaction();
+
+  const handleFollowToggle = useCallback(() => {
+    if (!username) return;
+    if (isFollowing) {
+      unfollowMutation.mutate(username, {
+        onSuccess: () => setIsFollowing(false),
+      });
+    } else {
+      followMutation.mutate(username, {
+        onSuccess: () => setIsFollowing(true),
+      });
+    }
+  }, [username, isFollowing, followMutation, unfollowMutation]);
 
   const feeds: FeedItem[] =
     feedsData?.pages.flatMap((page) => page.posts) ?? [];
@@ -91,6 +113,30 @@ export default function UserProfileScreen() {
               <Text style={styles.statLabel}>스페이스</Text>
             </View>
           </View>
+          {!isOwnProfile && (
+            <TouchableOpacity
+              style={[
+                styles.followBtn,
+                isFollowing && styles.followBtnActive,
+              ]}
+              onPress={handleFollowToggle}
+              disabled={followMutation.isPending || unfollowMutation.isPending}
+            >
+              {isFollowing ? (
+                <UserMinus size={16} color="#6b7280" />
+              ) : (
+                <UserPlus size={16} color="#fff" />
+              )}
+              <Text
+                style={[
+                  styles.followBtnText,
+                  isFollowing && styles.followBtnTextActive,
+                ]}
+              >
+                {isFollowing ? '팔로잉' : '팔로우'}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );
@@ -197,6 +243,29 @@ const styles = StyleSheet.create({
     width: 1,
     height: 28,
     backgroundColor: '#e5e7eb',
+  },
+  followBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#2563eb',
+  },
+  followBtnActive: {
+    backgroundColor: '#f3f4f6',
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+  },
+  followBtnText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  followBtnTextActive: {
+    color: '#6b7280',
   },
   empty: {
     paddingTop: 40,

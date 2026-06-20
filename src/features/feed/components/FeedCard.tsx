@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { Heart, MessageCircle } from 'lucide-react-native';
+import { Heart, MessageCircle, Bookmark } from 'lucide-react-native';
 import type { FeedItem } from '../../../data/schemas/feed';
 import HtmlContent from './HtmlContent';
 
@@ -22,9 +22,10 @@ function formatTimeAgo(dateStr: string): string {
 interface FeedCardProps {
   item: FeedItem;
   onReact?: () => void;
+  onBookmark?: () => void;
 }
 
-export default function FeedCard({ item, onReact }: FeedCardProps) {
+export default function FeedCard({ item, onReact, onBookmark }: FeedCardProps) {
   const author = item.xprofile;
 
   return (
@@ -84,6 +85,20 @@ export default function FeedCard({ item, onReact }: FeedCardProps) {
             {item.comments_count > 0 ? item.comments_count : ''}
           </Text>
         </View>
+
+        <TouchableOpacity
+          style={[styles.actionBtn, { marginLeft: 'auto' }]}
+          onPress={(e) => {
+            e.stopPropagation();
+            onBookmark?.();
+          }}
+        >
+          <Bookmark
+            size={18}
+            color={item.is_bookmarked ? '#2563eb' : '#9ca3af'}
+            fill={item.is_bookmarked ? '#2563eb' : 'none'}
+          />
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );

@@ -11,7 +11,7 @@ import {
 import { router } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import { useFeeds } from '../hooks/useFeeds';
-import { useToggleReaction } from '../hooks/useFeedMutations';
+import { useToggleReaction, useToggleBookmark } from '../hooks/useFeedMutations';
 import FeedCard from '../components/FeedCard';
 import type { FeedItem } from '../../../data/schemas/feed';
 
@@ -28,6 +28,7 @@ export default function FeedListScreen() {
   } = useFeeds();
 
   const toggleReaction = useToggleReaction();
+  const toggleBookmark = useToggleBookmark();
 
   const feeds: FeedItem[] =
     data?.pages.flatMap((page) => page.posts) ?? [];
@@ -39,11 +40,22 @@ export default function FeedListScreen() {
     [toggleReaction]
   );
 
+  const handleBookmark = useCallback(
+    (feedId: number) => {
+      toggleBookmark.mutate(feedId);
+    },
+    [toggleBookmark]
+  );
+
   const renderItem = useCallback(
     ({ item }: { item: FeedItem }) => (
-      <FeedCard item={item} onReact={() => handleReaction(item.id)} />
+      <FeedCard
+        item={item}
+        onReact={() => handleReaction(item.id)}
+        onBookmark={() => handleBookmark(item.id)}
+      />
     ),
-    [handleReaction]
+    [handleReaction, handleBookmark]
   );
 
   const keyExtractor = useCallback(
