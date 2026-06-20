@@ -3,6 +3,7 @@ import { FLUENT_API } from '../../config/api';
 import {
   FeedListResponseSchema,
   FeedItemSchema,
+  CommentItemSchema,
   CommentsResponseSchema,
   type FeedItem,
   type CommentItem,
@@ -55,6 +56,14 @@ export const FeedRepository = {
     const { data } = await client.get(`${BASE}/feeds/${feedId}/comments`, {
       params: { page },
     });
+    // Handle various response shapes
+    if (Array.isArray(data)) {
+      return data.map((c: unknown) => CommentItemSchema.parse(c));
+    }
+    const comments = data.comments ?? data.data ?? [];
+    if (Array.isArray(comments)) {
+      return comments.map((c: unknown) => CommentItemSchema.parse(c));
+    }
     const parsed = CommentsResponseSchema.parse(data);
     return parsed.comments;
   },

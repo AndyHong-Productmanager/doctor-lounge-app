@@ -67,7 +67,8 @@ export const FeedListResponseSchema = z.object({
 
 export const CommentItemSchema = z.object({
   id: z.number(),
-  message: z.string(),
+  message: z.string().optional().default(''),
+  message_rendered: z.string().optional().default(''),
   created_at: z.string(),
   xprofile: XProfileSchema.optional(),
   reactions_count: z.number().optional().default(0),
@@ -75,7 +76,7 @@ export const CommentItemSchema = z.object({
 
 export const CommentsResponseSchema = z.object({
   comments: z.array(CommentItemSchema).optional().default([]),
-});
+}).passthrough();
 
 export type XProfile = z.infer<typeof XProfileSchema>;
 export type FeedItem = z.infer<typeof FeedItemSchema>;

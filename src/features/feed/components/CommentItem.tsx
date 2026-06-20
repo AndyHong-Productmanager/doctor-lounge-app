@@ -45,7 +45,7 @@ export default function CommentItemComponent({ comment }: CommentItemProps) {
           </Text>
         </View>
         <HtmlContent
-          html={comment.message}
+          html={comment.message_rendered || comment.message}
           baseStyle={{ fontSize: 14, lineHeight: 20 }}
         />
       </View>
