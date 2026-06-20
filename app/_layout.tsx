@@ -9,6 +9,7 @@ import {
   registerForPushNotifications,
   registerDeviceToken,
 } from '../src/shared/push/pushService';
+import * as SecureStore from 'expo-secure-store';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 const queryClient = new QueryClient({
@@ -18,15 +19,23 @@ const queryClient = new QueryClient({
 });
 
 function AuthGate() {
-  const { isAuthenticated, isLoading, setLoading, setDeviceToken, clearAuth } = useAuthStore();
+  const { isAuthenticated, isLoading, setLoading, setAuthenticated, setDeviceToken, clearAuth } = useAuthStore();
   const deviceTokenRef = useRef<string | null>(null);
   const notificationResponseListener = useRef<EventSubscription | null>(null);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const valid = await AuthRepository.validate();
-      if (!valid) {
+      const autoLogin = await SecureStore.getItemAsync('auto_login');
+      if (autoLogin === 'false') {
+        clearAuth();
+        setLoading(false);
+        return;
+      }
+      const userInfo = await AuthRepository.validate();
+      if (userInfo) {
+        setAuthenticated(userInfo);
+      } else {
         clearAuth();
       }
       setLoading(false);

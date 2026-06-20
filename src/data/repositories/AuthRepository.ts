@@ -7,18 +7,26 @@ export const AuthRepository = {
     const { data } = await client.post('/jwt-auth/v1/token', { username, password });
     const parsed = LoginResponseSchema.parse(data);
     await SecureStore.setItemAsync('jwt_token', parsed.token);
+    await SecureStore.setItemAsync('user_info', JSON.stringify({
+      email: parsed.user_email,
+      displayName: parsed.user_display_name,
+      nicename: parsed.user_nicename,
+    }));
     return parsed;
   },
 
-  async validate() {
+  async validate(): Promise<{ email: string; displayName: string; nicename: string } | null> {
     const token = await SecureStore.getItemAsync('jwt_token');
-    if (!token) return false;
+    if (!token) return null;
     try {
       await client.post('/jwt-auth/v1/token/validate');
-      return true;
+      const userStr = await SecureStore.getItemAsync('user_info');
+      if (!userStr) return null;
+      return JSON.parse(userStr);
     } catch {
       await SecureStore.deleteItemAsync('jwt_token');
-      return false;
+      await SecureStore.deleteItemAsync('user_info');
+      return null;
     }
   },
 
@@ -33,5 +41,6 @@ export const AuthRepository = {
       }
     }
     await SecureStore.deleteItemAsync('jwt_token');
+    await SecureStore.deleteItemAsync('user_info');
   },
 };
