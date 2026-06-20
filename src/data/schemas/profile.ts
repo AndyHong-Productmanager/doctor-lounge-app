@@ -18,6 +18,10 @@ export const UserProfileSchema = z.object({
   total_points: z.union([z.string(), z.number()]).optional().default(0).transform((v) => Number(v)),
   last_activity: z.string().nullable().optional(),
   permalink: z.string().nullable().optional(),
+  has_custom_avatar: z.boolean().optional(),
+  badge_slugs: z.array(z.string()).optional().default([]),
+  is_restricted: z.boolean().optional(),
+  profile_navs: z.array(z.unknown()).optional().default([]),
   counts: z
     .object({
       posts: z.number().optional().default(0),

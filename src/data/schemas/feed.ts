@@ -61,7 +61,7 @@ export const FeedListResponseSchema = z.object({
     total: z.number().optional(),
     per_page: z.number().optional(),
   }),
-  sticky: z.array(FeedItemSchema).optional().default([]),
+  sticky: z.array(FeedItemSchema).nullable().optional().default([]),
   execution_time: z.number().optional(),
 });
 
