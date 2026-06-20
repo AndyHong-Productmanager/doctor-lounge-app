@@ -30,7 +30,7 @@ export default function BookmarksScreen() {
   const toggleReaction = useToggleReaction();
   const toggleBookmark = useToggleBookmark();
 
-  const feeds: FeedItem[] = data?.posts ?? [];
+  const feeds: FeedItem[] = data?.feeds.data ?? [];
 
   const handleReaction = useCallback(
     (feedId: number) => {

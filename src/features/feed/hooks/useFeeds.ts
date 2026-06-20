@@ -9,9 +9,10 @@ export function useFeeds(params: Omit<FeedListParams, 'page'> = {}) {
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      const total = lastPage.pagination?.total ?? 0;
+      const total = lastPage.feeds.total ?? 0;
       const currentPage = allPages.length;
-      const hasMore = lastPage.posts.length >= 15 || currentPage * 15 < total;
+      const perPage = lastPage.feeds.per_page ?? 15;
+      const hasMore = lastPage.feeds.data.length >= perPage || currentPage * perPage < total;
       return hasMore ? currentPage + 1 : undefined;
     },
   });

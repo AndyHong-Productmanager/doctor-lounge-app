@@ -39,7 +39,7 @@ export default function SearchScreen() {
   const toggleBookmark = useToggleBookmark();
 
   const feeds: FeedItem[] =
-    feedsData?.pages.flatMap((page) => page.posts) ?? [];
+    feedsData?.pages.flatMap((page) => page.feeds.data) ?? [];
 
   const filteredMembers: MemberItem[] = searchTerm
     ? (allMembers ?? []).filter(

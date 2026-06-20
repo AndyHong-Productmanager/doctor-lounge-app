@@ -69,6 +69,7 @@ export const FeedRepository = {
 
   async getBookmarks() {
     const { data } = await client.get(`${BASE}/feeds/bookmarks`);
+    // Bookmarks endpoint may return same structure as feeds
     const parsed = FeedListResponseSchema.parse(data);
     return parsed;
   },
