@@ -12,7 +12,7 @@ import {
 const BASE = FLUENT_API;
 
 export interface FeedListParams {
-  space_id?: number;
+  space?: string;
   page?: number;
   per_page?: number;
   search?: string;
