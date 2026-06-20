@@ -28,7 +28,7 @@ export default function SpaceDetailScreen() {
     isLoading: feedsLoading,
     refetch,
     isRefetching,
-  } = useFeeds({ space: slug });
+  } = useFeeds(space ? { space_id: space.id } : {}, { enabled: !!space });
 
   const toggleReaction = useToggleReaction();
 

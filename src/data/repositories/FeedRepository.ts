@@ -11,7 +11,7 @@ import {
 const BASE = FLUENT_API;
 
 export interface FeedListParams {
-  space?: string;
+  space_id?: number;
   page?: number;
   per_page?: number;
   search?: string;
@@ -26,19 +26,19 @@ export const FeedRepository = {
 
   async getFeedById(id: number): Promise<FeedItem> {
     const { data } = await client.get(`${BASE}/feeds/${id}/by-id`);
-    const post = data.post ?? data;
+    const post = data.feed ?? data.post ?? data;
     return FeedItemSchema.parse(post);
   },
 
   async getFeedBySlug(slug: string): Promise<FeedItem> {
     const { data } = await client.get(`${BASE}/feeds/${slug}/by-slug`);
-    const post = data.post ?? data;
+    const post = data.feed ?? data.post ?? data;
     return FeedItemSchema.parse(post);
   },
 
   async createFeed(payload: { message: string; space_id?: number }) {
     const { data } = await client.post(`${BASE}/feeds`, payload);
-    const post = data.post ?? data;
+    const post = data.feed ?? data.post ?? data;
     return FeedItemSchema.parse(post);
   },
 

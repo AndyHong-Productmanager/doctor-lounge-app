@@ -61,31 +61,26 @@ export default function ProfileScreen() {
         <Text style={styles.displayName}>
           {profile?.display_name ?? user?.displayName ?? ''}
         </Text>
-        {profile?.bio ? (
-          <Text style={styles.bio}>{profile.bio}</Text>
+        {profile?.short_description ? (
+          <Text style={styles.bio}>{profile.short_description}</Text>
         ) : null}
 
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
             <Text style={styles.statCount}>
-              {profile?.counts?.posts ?? 0}
+              {profile?.total_points ?? 0}
             </Text>
-            <Text style={styles.statLabel}>게시글</Text>
+            <Text style={styles.statLabel}>포인트</Text>
           </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statCount}>
-              {profile?.counts?.comments ?? 0}
-            </Text>
-            <Text style={styles.statLabel}>댓글</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statCount}>
-              {profile?.counts?.spaces ?? 0}
-            </Text>
-            <Text style={styles.statLabel}>스페이스</Text>
-          </View>
+          {profile?.is_verified ? (
+            <>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <Text style={styles.statCount}>✓</Text>
+                <Text style={styles.statLabel}>인증됨</Text>
+              </View>
+            </>
+          ) : null}
         </View>
       </View>
 
