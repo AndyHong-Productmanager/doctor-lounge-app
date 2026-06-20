@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet, type LayoutChangeEvent } from 'react-native';
 import { router } from 'expo-router';
 import { Heart, MessageCircle, Bookmark } from 'lucide-react-native';
 import type { FeedItem } from '../../../data/schemas/feed';
@@ -74,8 +74,17 @@ interface FeedCardProps {
   onBookmark?: () => void;
 }
 
+const MAX_CONTENT_HEIGHT = 150;
+
 export default function FeedCard({ item, onPress, onReact, onBookmark }: FeedCardProps) {
   const author = item.xprofile;
+  const [isClipped, setIsClipped] = useState(false);
+
+  const onContentLayout = useCallback((e: LayoutChangeEvent) => {
+    if (e.nativeEvent.layout.height >= MAX_CONTENT_HEIGHT) {
+      setIsClipped(true);
+    }
+  }, []);
 
   return (
     <TouchableOpacity
@@ -101,8 +110,11 @@ export default function FeedCard({ item, onPress, onReact, onBookmark }: FeedCar
         </View>
       </View>
 
-      <View style={styles.content}>
-        <HtmlContent html={item.message_rendered} />
+      <View style={styles.contentWrapper}>
+        <View style={isClipped ? styles.contentClip : undefined} onLayout={!isClipped ? onContentLayout : undefined}>
+          <HtmlContent html={item.message_rendered} />
+        </View>
+        {isClipped ? <Text style={styles.readMore}>더 보기</Text> : null}
       </View>
 
       {(() => {
@@ -237,6 +249,19 @@ const styles = StyleSheet.create({
   },
   content: {
     marginBottom: 10,
+  },
+  contentWrapper: {
+    marginBottom: 10,
+  },
+  contentClip: {
+    maxHeight: 150,
+    overflow: 'hidden',
+  },
+  readMore: {
+    fontSize: 14,
+    color: '#2563eb',
+    marginTop: 4,
+    fontWeight: '500',
   },
   mediaContainer: {
     marginBottom: 10,
