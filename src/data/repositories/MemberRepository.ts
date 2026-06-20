@@ -8,6 +8,9 @@ export const MemberRepository = {
   async getMembersList(): Promise<MemberItem[]> {
     const { data } = await client.get(`${BASE}/members`);
     const parsed = MembersResponseSchema.parse(data);
-    return parsed.members;
+    // Handle both array and paginated object
+    const raw = parsed.members;
+    const list: MemberItem[] = Array.isArray(raw) ? raw : (raw as any)?.data ?? [];
+    return list;
   },
 };

@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 export const XProfileSchema = z.object({
-  user_id: z.number().optional(),
+  user_id: z.union([z.string(), z.number()]).optional().transform((val) => {
+    if (val === null || val === undefined) return undefined;
+    const num = Number(val);
+    return isNaN(num) ? undefined : num;
+  }),
   display_name: z.string(),
   avatar: z.string().nullable().optional(),
   username: z.string(),
@@ -31,7 +35,11 @@ export const FeedItemSchema = z.object({
     const num = Number(val);
     return isNaN(num) ? null : num;
   }),
-  user_id: z.number().optional(),
+  user_id: z.union([z.string(), z.number()]).optional().transform((val) => {
+    if (val === null || val === undefined) return undefined;
+    const num = Number(val);
+    return isNaN(num) ? undefined : num;
+  }),
   status: z.string().optional(),
   is_sticky: z.number().optional(),
   comments_count: z.number().optional().default(0),
