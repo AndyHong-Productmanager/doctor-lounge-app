@@ -5,6 +5,52 @@ import { Heart, MessageCircle, Bookmark } from 'lucide-react-native';
 import type { FeedItem } from '../../../data/schemas/feed';
 import HtmlContent from './HtmlContent';
 
+function getMediaImages(item: FeedItem): string[] {
+  const meta = item.meta as Record<string, unknown> | null | undefined;
+  if (!meta && !item.featured_image) {
+    return item.featured_image ? [item.featured_image] : [];
+  }
+
+  const images: string[] = [];
+
+  // Check meta.media_items (FluentCommunity stores images here)
+  if (meta) {
+    const mediaItems = meta.media_items;
+    if (Array.isArray(mediaItems)) {
+      for (const mi of mediaItems) {
+        if (
+          mi &&
+          typeof mi === 'object' &&
+          'url' in mi &&
+          typeof (mi as Record<string, unknown>).url === 'string'
+        ) {
+          images.push((mi as Record<string, unknown>).url as string);
+        }
+      }
+    }
+
+    // Check meta.media_preview
+    const preview = meta.media_preview;
+    if (preview && typeof preview === 'object' && 'image' in preview) {
+      const previewImage = (preview as Record<string, unknown>).image;
+      if (
+        typeof previewImage === 'string' &&
+        previewImage &&
+        !images.includes(previewImage)
+      ) {
+        images.push(previewImage);
+      }
+    }
+  }
+
+  // Also check featured_image as fallback
+  if (item.featured_image && !images.includes(item.featured_image)) {
+    images.unshift(item.featured_image);
+  }
+
+  return images;
+}
+
 function formatTimeAgo(dateStr: string): string {
   const now = Date.now();
   const date = new Date(dateStr).getTime();
@@ -57,13 +103,45 @@ export default function FeedCard({ item, onPress, onReact, onBookmark }: FeedCar
         <HtmlContent html={item.message_rendered} />
       </View>
 
-      {item.featured_image ? (
-        <Image
-          source={{ uri: item.featured_image }}
-          style={styles.featuredImage}
-          resizeMode="cover"
-        />
-      ) : null}
+      {(() => {
+        const mediaImages = getMediaImages(item);
+        if (mediaImages.length === 0) return null;
+        if (mediaImages.length === 1) {
+          return (
+            <View style={styles.mediaContainer}>
+              <Image
+                source={{ uri: mediaImages[0] }}
+                style={styles.singleImage}
+                resizeMode="cover"
+              />
+            </View>
+          );
+        }
+        return (
+          <View style={styles.mediaContainer}>
+            <View style={styles.imageGrid}>
+              {mediaImages.slice(0, 4).map((url, idx) => (
+                <Image
+                  key={idx}
+                  source={{ uri: url }}
+                  style={[
+                    styles.gridImage,
+                    mediaImages.length === 2 && { width: '49%' },
+                    mediaImages.length === 3 && idx === 0 && { width: '100%', height: 200 },
+                    mediaImages.length >= 4 && { width: '49%' },
+                  ]}
+                  resizeMode="cover"
+                />
+              ))}
+              {mediaImages.length > 4 ? (
+                <View style={styles.moreOverlay}>
+                  <Text style={styles.moreText}>+{mediaImages.length - 4}</Text>
+                </View>
+              ) : null}
+            </View>
+          </View>
+        );
+      })()}
 
       <View style={styles.footer}>
         <TouchableOpacity
@@ -158,11 +236,41 @@ const styles = StyleSheet.create({
   content: {
     marginBottom: 10,
   },
-  featuredImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 8,
+  mediaContainer: {
     marginBottom: 10,
+  },
+  singleImage: {
+    width: '100%',
+    height: 250,
+    borderRadius: 8,
+  },
+  imageGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  gridImage: {
+    width: '48%',
+    height: 150,
+    borderRadius: 4,
+  },
+  moreOverlay: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    width: '49%',
+    height: 150,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+  },
+  moreText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: '700',
   },
   footer: {
     flexDirection: 'row',

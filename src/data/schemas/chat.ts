@@ -1,44 +1,46 @@
 import { z } from 'zod';
 
 export const ChatParticipantSchema = z.object({
-  user_id: z.number(),
-  display_name: z.string(),
+  user_id: z.union([z.string(), z.number()]).transform(v => Number(v)),
+  display_name: z.string().optional().default(''),
   avatar: z.string().nullable().optional(),
-});
+}).passthrough();
 
 export const ChatLastMessageSchema = z.object({
   id: z.number().optional(),
   message: z.string().optional().default(''),
+  message_rendered: z.string().optional().default(''),
   created_at: z.string().optional().default(''),
   sender: ChatParticipantSchema.optional(),
-});
+}).passthrough();
 
 export const ChatThreadSchema = z.object({
   id: z.number(),
   title: z.string().optional().default(''),
-  type: z.enum(['direct', 'group']).optional().default('direct'),
+  type: z.string().optional().default('direct'),
   last_message: ChatLastMessageSchema.nullable().optional(),
-  unread_count: z.number().optional().default(0),
+  unread_count: z.union([z.string(), z.number()]).optional().default(0).transform(v => Number(v)),
   participants: z.array(ChatParticipantSchema).optional().default([]),
   updated_at: z.string().optional().default(''),
-});
+}).passthrough();
 
 export const ChatThreadListResponseSchema = z.array(ChatThreadSchema);
 
 export const ChatMessageSenderSchema = z.object({
-  user_id: z.number(),
-  display_name: z.string(),
+  user_id: z.union([z.string(), z.number()]).transform(v => Number(v)),
+  display_name: z.string().optional().default(''),
   avatar: z.string().nullable().optional(),
-});
+}).passthrough();
 
 export const ChatMessageSchema = z.object({
   id: z.number(),
-  thread_id: z.number().optional(),
-  message: z.string(),
+  thread_id: z.union([z.string(), z.number()]).optional().transform(v => v ? Number(v) : undefined),
+  message: z.string().optional().default(''),
+  message_rendered: z.string().optional().default(''),
   sender: ChatMessageSenderSchema.optional(),
-  created_at: z.string(),
+  created_at: z.string().optional().default(''),
   reactions: z.array(z.unknown()).optional().default([]),
-});
+}).passthrough();
 
 export const ChatMessageListResponseSchema = z.object({
   messages: z.array(ChatMessageSchema).optional().default([]),

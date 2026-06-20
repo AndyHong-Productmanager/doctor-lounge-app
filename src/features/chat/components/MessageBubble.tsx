@@ -67,7 +67,7 @@ export default function MessageBubble({
             ]}
             onLongPress={onLongPress}
           >
-            {message.message}
+            {message.message_rendered || message.message}
           </Text>
         </View>
         <Text

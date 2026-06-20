@@ -8,7 +8,12 @@ export const UserProfileSchema = z.object({
   bio: z.string().nullable().optional(),
   short_description: z.string().nullable().optional(),
   created_at: z.string().optional(),
-  user_id: z.union([z.string(), z.number()]).optional().transform((val) => {
+  id: z.union([z.string(), z.number()]).nullable().optional().transform((val) => {
+    if (val === null || val === undefined) return undefined;
+    const num = Number(val);
+    return isNaN(num) ? undefined : num;
+  }),
+  user_id: z.union([z.string(), z.number()]).nullable().optional().transform((val) => {
     if (val === null || val === undefined) return undefined;
     const num = Number(val);
     return isNaN(num) ? undefined : num;
