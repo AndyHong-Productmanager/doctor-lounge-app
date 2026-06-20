@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { router } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 import { AuthRepository } from '../../../data/repositories/AuthRepository';
 import { useAuthStore } from '../hooks/useAuthStore';
 
@@ -8,6 +9,7 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [autoLogin, setAutoLogin] = useState(true);
   const { setAuthenticated } = useAuthStore();
 
   const handleLogin = async () => {
@@ -18,6 +20,7 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       const result = await AuthRepository.login(username, password);
+      await SecureStore.setItemAsync('auto_login', autoLogin ? 'true' : 'false');
       setAuthenticated({
         email: result.user_email,
         displayName: result.user_display_name,
@@ -52,6 +55,16 @@ export default function LoginScreen() {
           onChangeText={setPassword}
           secureTextEntry
         />
+        <TouchableOpacity
+          style={styles.autoLoginRow}
+          onPress={() => setAutoLogin((prev) => !prev)}
+          activeOpacity={0.7}
+        >
+          <View style={[styles.checkbox, autoLogin && styles.checkboxChecked]}>
+            {autoLogin && <Text style={styles.checkmark}>✓</Text>}
+          </View>
+          <Text style={styles.autoLoginText}>자동 로그인</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>로그인</Text>}
         </TouchableOpacity>
@@ -69,6 +82,11 @@ const styles = StyleSheet.create({
   logo: { width: 200, height: 60, alignSelf: 'center', marginBottom: 12 },
   title: { fontSize: 24, fontWeight: '700', textAlign: 'center', marginBottom: 32, color: '#1a1a1a' },
   input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 14, fontSize: 16, marginBottom: 12, backgroundColor: '#f9f9f9' },
+  autoLoginRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 4, marginTop: 4 },
+  checkbox: { width: 22, height: 22, borderRadius: 4, borderWidth: 1.5, borderColor: '#ccc', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', marginRight: 8 },
+  checkboxChecked: { backgroundColor: '#2563eb', borderColor: '#2563eb' },
+  checkmark: { color: '#fff', fontSize: 14, fontWeight: '700', lineHeight: 18 },
+  autoLoginText: { fontSize: 14, color: '#555' },
   button: { backgroundColor: '#2563eb', borderRadius: 8, padding: 16, alignItems: 'center', marginTop: 8 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
   registerLink: { marginTop: 20, alignItems: 'center' },
