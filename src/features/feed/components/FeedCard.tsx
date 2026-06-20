@@ -48,7 +48,9 @@ function getMediaImages(item: FeedItem): string[] {
     images.unshift(item.featured_image);
   }
 
-  return images;
+  return images.map(url => {
+    try { return encodeURI(decodeURI(url)); } catch { return encodeURI(url); }
+  });
 }
 
 function formatTimeAgo(dateStr: string): string {
