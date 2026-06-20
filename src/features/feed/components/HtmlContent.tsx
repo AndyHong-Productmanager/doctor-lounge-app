@@ -27,12 +27,26 @@ const TAGS_STYLES: Record<string, MixedStyleDeclaration> = {
   },
 };
 
+function preprocessHtml(raw: string): string {
+  return raw.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, (_, content: string) => {
+    const decoded = content
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&');
+    return decoded
+      .split(/\n\n+/)
+      .map((block: string) => `<p>${block.trim().split('\n').join('<br/>')}</p>`)
+      .join('');
+  });
+}
+
 interface HtmlContentProps {
   html: string;
   baseStyle?: MixedStyleDeclaration;
 }
 
 export default function HtmlContent({ html, baseStyle }: HtmlContentProps) {
+  const processed = preprocessHtml(html);
   const { width } = useWindowDimensions();
   const contentWidth = width - 32;
 
@@ -52,7 +66,7 @@ export default function HtmlContent({ html, baseStyle }: HtmlContentProps) {
   return (
     <RenderHtml
       contentWidth={contentWidth}
-      source={{ html }}
+      source={{ html: processed }}
       baseStyle={{ ...BASE_STYLE, ...baseStyle }}
       tagsStyles={TAGS_STYLES}
       enableExperimentalBRCollapsing
