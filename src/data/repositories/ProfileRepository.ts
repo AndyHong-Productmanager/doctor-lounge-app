@@ -18,9 +18,9 @@ export const ProfileRepository = {
 
   async updateProfile(
     username: string,
-    payload: Partial<Pick<UserProfile, 'display_name' | 'bio' | 'avatar'>>
+    payload: Partial<Pick<UserProfile, 'display_name' | 'short_description'>>
   ) {
-    const { data } = await client.post(
+    const { data } = await client.put(
       `${BASE}/profile/${username}`,
       payload
     );

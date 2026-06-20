@@ -31,7 +31,10 @@ export default function UserProfileScreen() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useFeeds({ search: username });
+  } = useFeeds(
+    profile?.user_id ? { user_id: profile.user_id } : {},
+    { enabled: !!profile?.user_id }
+  );
 
   const toggleReaction = useToggleReaction();
 

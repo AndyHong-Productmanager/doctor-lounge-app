@@ -31,7 +31,7 @@ export default function ChatListScreen() {
     ({ item }: { item: ChatThread }) => (
       <ThreadItem
         thread={item}
-        onPress={() => router.push(`/chat/${item.id}`)}
+        onPress={() => router.push(`/(tabs)/chat/${item.id}`)}
       />
     ),
     [],
@@ -85,7 +85,7 @@ export default function ChatListScreen() {
       />
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => router.push('/chat/new')}
+        onPress={() => router.push('/(tabs)/chat/new')}
       >
         <Plus size={24} color="#fff" />
       </TouchableOpacity>

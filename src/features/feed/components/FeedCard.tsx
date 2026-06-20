@@ -57,6 +57,14 @@ export default function FeedCard({ item, onPress, onReact, onBookmark }: FeedCar
         <HtmlContent html={item.message_rendered} />
       </View>
 
+      {item.featured_image ? (
+        <Image
+          source={{ uri: item.featured_image }}
+          style={styles.featuredImage}
+          resizeMode="cover"
+        />
+      ) : null}
+
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.actionBtn}
@@ -148,6 +156,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   content: {
+    marginBottom: 10,
+  },
+  featuredImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
     marginBottom: 10,
   },
   footer: {

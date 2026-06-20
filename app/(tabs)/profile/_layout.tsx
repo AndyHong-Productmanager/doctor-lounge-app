@@ -5,6 +5,7 @@ export default function ProfileLayout() {
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="[username]" options={{ title: '프로필', headerBackTitle: '뒤로' }} />
+      <Stack.Screen name="edit" options={{ title: '프로필 수정', headerBackTitle: '뒤로' }} />
     </Stack>
   );
 }
